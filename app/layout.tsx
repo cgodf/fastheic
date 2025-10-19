@@ -1,36 +1,38 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import Analytics from './components/Analytics';
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Free HEIC to JPG Converter - Convert Apple Photos Online",
+  title: "FastHEIC - Fast & Free HEIC to JPG Converter",
   description: "Convert HEIC files to JPG instantly in your browser. No uploads, completely private, bulk conversion supported. Fast, free, and secure HEIC converter.",
-  keywords: "HEIC to JPG, HEIC converter, Apple photos, convert HEIC, HEIF to JPG, image converter, free converter",
-  authors: [{ name: "Fast HEIC to JPG" }],
-  creator: "Fast HEIC to JPG",
-  publisher: "Fast HEIC to JPG",
+  keywords: "HEIC to JPG, HEIC converter, Apple photos, convert HEIC, HEIF to JPG, image converter, free converter, fast HEIC, FastHEIC",
+  authors: [{ name: "FastHEIC" }],
+  creator: "FastHEIC",
+  publisher: "FastHEIC",
   openGraph: {
-    title: "Free HEIC to JPG Converter - Convert Apple Photos Online",
+    title: "FastHEIC - Fast & Free HEIC to JPG Converter",
     description: "Convert HEIC files to JPG instantly in your browser. No uploads, completely private, bulk conversion supported.",
     url: "https://fastheictojpg.com",
-    siteName: "Fast HEIC to JPG",
+    siteName: "FastHEIC",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free HEIC to JPG Converter",
+    title: "FastHEIC - Fast & Free HEIC to JPG Converter",
     description: "Convert HEIC files to JPG instantly in your browser. Private and secure.",
   },
   robots: {
@@ -55,9 +57,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: 'dark' }}>
+    <html lang="en" className="light" style={{ colorScheme: 'light' }}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
       >
         <Analytics />
         {children}

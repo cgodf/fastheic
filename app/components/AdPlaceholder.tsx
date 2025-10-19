@@ -19,8 +19,10 @@ export default function AdPlaceholder({ size, position, className = '' }: AdPlac
   return (
     <div 
       className={`
-        glass rounded-lg flex items-center justify-center
+        border-2 border-dashed border-border/30 rounded-lg 
+        flex items-center justify-center
         text-muted-foreground text-sm font-medium
+        bg-muted/20
         ${className}
       `}
       style={{

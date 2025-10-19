@@ -23,10 +23,9 @@ export default function FileDropzone({
   maxFileSize = DEFAULT_MAX_FILE_SIZE,
   maxTotalSize = DEFAULT_MAX_TOTAL_SIZE,
 }: FileDropzoneProps) {
-  const [dragActive, setDragActive] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const validateFiles = (files: File[]): { validFiles: File[]; errors: string[] } => {
+  const validateFiles = useCallback((files: File[]): { validFiles: File[]; errors: string[] } => {
     const validFiles: File[] = [];
     const newErrors: string[] = [];
 
@@ -67,7 +66,7 @@ export default function FileDropzone({
     }
 
     return { validFiles, errors: newErrors };
-  };
+  }, [maxFiles, maxFileSize, maxTotalSize]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setErrors([]);
@@ -89,8 +88,7 @@ export default function FileDropzone({
     }));
 
     onFilesAdded(conversionFiles);
-    setDragActive(false);
-  }, [onFilesAdded, maxFiles, maxFileSize, maxTotalSize]);
+  }, [onFilesAdded, validateFiles]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -108,22 +106,22 @@ export default function FileDropzone({
       <div
         {...getRootProps()}
         className={`
-          glass glass-hover rounded-2xl p-12 text-center cursor-pointer
-          transition-all duration-300 ease-in-out
-          ${isDragActive ? 'scale-105 bg-primary/20 border-primary/50' : ''}
-          ${disabled ? 'cursor-not-allowed opacity-50' : ''}
+          group glass rounded-2xl p-12 text-center cursor-pointer border-2
+          transition-all duration-300
+          ${isDragActive ? 'scale-[1.02] border-primary bg-primary/5 shadow-xl shadow-primary/10' : 'border-border/40'}
+          ${disabled ? 'cursor-not-allowed opacity-50' : 'hover:border-primary/60 hover:-translate-y-1 hover:shadow-lg'}
           ${errors.length > 0 ? 'border-destructive/50' : ''}
         `}
-        onDragEnter={() => setDragActive(true)}
-        onDragLeave={() => setDragActive(false)}
       >
         <input {...getInputProps()} />
         
         <div className="space-y-4">
           {/* Upload Icon */}
-          <div className="mx-auto w-16 h-16 glass rounded-full flex items-center justify-center">
+          <div className={`mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/15 ${
+            isDragActive ? 'scale-110 bg-primary/20' : ''
+          }`}>
             <svg
-              className="w-8 h-8 text-primary"
+              className="w-8 h-8 text-primary transition-transform duration-300 group-hover:-translate-y-0.5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -159,13 +157,12 @@ export default function FileDropzone({
           </div>
 
           {/* Privacy Notice */}
-          <div className="glass rounded-lg p-3 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-2">
-              <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-              </svg>
-              100% Private - Files never leave your device
-            </span>
+          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+            <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+            </svg>
+            <span className="font-medium">100% Private</span>
+            <span className="text-xs opacity-75">- Files never leave your device</span>
           </div>
         </div>
       </div>

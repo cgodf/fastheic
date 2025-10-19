@@ -8,6 +8,8 @@ import FileDropzone from './FileDropzone';
 import ConversionQueue from './ConversionQueue';
 import DownloadManager from './DownloadManager';
 import { HeaderAd, BelowResultsAd } from './AdPlaceholder';
+import ThemeToggle from './ThemeToggle';
+import { LinearProgress } from './ProgressIndicator';
 
 type AppState = 'idle' | 'processing' | 'completed';
 
@@ -168,84 +170,171 @@ export default function ConversionPipeline() {
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-8">
-      {/* Header Ad */}
-      <HeaderAd />
-
-      {/* Main Content */}
-      <div className="flex gap-8">
-        {/* Main Conversion Area */}
-        <div className="flex-1 space-y-6">
-          {appState === 'idle' && (
-            <div>
-              <div className="text-center mb-8">
-                <h1 className="text-4xl font-bold text-foreground mb-4">
-                  Free HEIC to JPG Converter
-                </h1>
-                <p className="text-xl text-muted-foreground">
-                  Convert Apple HEIC photos to JPG format instantly in your browser
-                </p>
-              </div>
-              
-              <FileDropzone onFilesAdded={handleFilesAdded} />
+    <div className="w-full min-h-screen">
+      {/* Header with Theme Toggle */}
+      <div className="w-full border-b border-border/40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-          )}
+            <div className="flex items-baseline gap-1">
+              <span className="text-lg font-bold text-foreground">Fast</span>
+              <span className="text-lg font-bold text-primary">HEIC</span>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
+      </div>
 
-          {(appState === 'processing' || appState === 'completed') && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-semibold text-foreground">
-                    {appState === 'processing' ? 'Converting Files...' : 'Conversion Complete'}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    {progress.completed} of {progress.total} files converted
-                    {progress.failed > 0 && ` • ${progress.failed} failed`}
-                  </p>
+      {/* Main Container */}
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Header Ad */}
+        <HeaderAd />
+
+        {/* Idle State - Centered */}
+        {appState === 'idle' && (
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <h1 className="text-5xl font-bold text-foreground mb-4">
+                Fast, Free HEIC to JPG Converter
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Convert Apple HEIC photos to JPG instantly in your browser
+              </p>
+            </div>
+            
+            <FileDropzone onFilesAdded={handleFilesAdded} />
+            
+            {/* Features */}
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">100% Private</h3>
+                <p className="text-sm text-muted-foreground">Files never leave your device</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Lightning Fast</h3>
+                <p className="text-sm text-muted-foreground">Instant conversion in-browser</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-foreground mb-1">Batch Convert</h3>
+                <p className="text-sm text-muted-foreground">Convert multiple files at once</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Processing/Completed State - With Sidebar */}
+        {(appState === 'processing' || appState === 'completed') && (
+          <div className="flex gap-8">
+            {/* Main Conversion Area */}
+            <div className="flex-1 space-y-6">
+              {/* Header with Progress */}
+              <div className="glass rounded-2xl p-6">
+                <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-3">
+                      {appState === 'completed' ? (
+                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </div>
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                        </div>
+                      )}
+                      <h2 className="text-3xl font-bold text-foreground">
+                        {appState === 'processing' ? 'Converting Files...' : 'Conversion Complete'}
+                      </h2>
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground mb-2">
+                      {progress.completed} of {progress.total} files processed
+                      {progress.failed > 0 && ` • ${progress.failed} failed`}
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    {progress.failed > 0 && appState === 'completed' && (
+                      <button
+                        onClick={handleRetryFailed}
+                        className="glass glass-hover px-4 py-2 rounded-lg text-sm font-medium text-foreground transition-smooth flex items-center gap-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Retry Failed
+                      </button>
+                    )}
+                    <button
+                      onClick={handleReset}
+                      className="glass glass-hover px-5 py-2 rounded-lg text-sm font-semibold text-foreground transition-smooth flex items-center gap-2"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      Convert More Files
+                    </button>
+                  </div>
                 </div>
                 
-                <div className="flex gap-2">
-                  {progress.failed > 0 && appState === 'completed' && (
-                    <button
-                      onClick={handleRetryFailed}
-                      className="glass glass-hover px-4 py-2 rounded-lg text-sm font-medium text-foreground"
-                    >
-                      Retry Failed
-                    </button>
-                  )}
-                  <button
-                    onClick={handleReset}
-                    className="glass glass-hover px-4 py-2 rounded-lg text-sm font-medium text-foreground"
-                  >
-                    Convert More Files
-                  </button>
-                </div>
+                {/* Progress Bar */}
+                <LinearProgress 
+                  current={progress.completed}
+                  total={progress.total}
+                  failed={progress.failed}
+                  size="md"
+                />
               </div>
 
+              {/* Downloads Section - Show First if Completed */}
+              {appState === 'completed' && progress.completed > 0 && (
+                <DownloadManager files={files.filter(f => f.status === 'done')} />
+              )}
+
+              {/* Processing Queue */}
               <ConversionQueue 
                 files={files} 
                 onRemoveFile={handleRemoveFile}
               />
-
-              {appState === 'completed' && progress.completed > 0 && (
-                <DownloadManager files={files.filter(f => f.status === 'done')} />
-              )}
             </div>
-          )}
-        </div>
 
-        {/* Sidebar with ads - only show on larger screens */}
-        <div className="hidden lg:block w-80">
-          <div className="sticky top-8">
-            {/* Sidebar content can go here */}
+            {/* Sidebar with ads - only show on larger screens */}
+            <div className="hidden lg:block w-80">
+              <div className="sticky top-8">
+                {/* Sidebar content can go here */}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        )}
 
-      {/* Below Results Ad */}
-      {appState === 'completed' && (
-        <BelowResultsAd className="mt-8" />
-      )}
+        {/* Below Results Ad */}
+        {appState === 'completed' && (
+          <BelowResultsAd className="mt-8" />
+        )}
+      </div>
     </div>
   );
 }

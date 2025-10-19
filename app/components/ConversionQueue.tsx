@@ -31,7 +31,7 @@ function FileCard({ file, onRemove }: FileCardProps) {
         );
       case 'done':
         return (
-          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-teal-500 flex items-center justify-center">
             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
@@ -72,7 +72,7 @@ function FileCard({ file, onRemove }: FileCardProps) {
       case 'converting':
         return 'text-primary';
       case 'done':
-        return 'text-green-500';
+        return 'text-teal-500';
       case 'failed':
         return 'text-destructive';
       default:
@@ -82,13 +82,16 @@ function FileCard({ file, onRemove }: FileCardProps) {
 
   return (
     <div className={`
-      glass rounded-xl p-4 transition-all duration-300
-      ${file.status === 'converting' ? 'scale-105 border-primary/50' : ''}
+      glass-card p-4 transition-smooth animate-slide-up
+      ${file.status === 'converting' ? 'scale-105 border-primary/50 animate-pulse-glow' : ''}
       ${file.status === 'failed' ? 'border-destructive/50' : ''}
+      ${file.status === 'done' ? 'border-teal-500/30 bg-teal-500/5' : ''}
     `}>
       <div className="flex items-center gap-4">
         {/* Thumbnail or Icon */}
-        <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden glass">
+        <div className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden glass-intense transition-smooth ${
+          file.status === 'converting' ? 'animate-pulse' : ''
+        }`}>
           {file.thumbnail ? (
             <img 
               src={file.thumbnail} 
@@ -119,7 +122,7 @@ function FileCard({ file, onRemove }: FileCardProps) {
             <div className="text-sm text-muted-foreground">
               {formatFileSize(file.size)}
               {file.convertedBlob && (
-                <span className="text-green-500 ml-2">
+                <span className="text-teal-500 ml-2">
                   → {formatFileSize(file.convertedBlob.size)}
                 </span>
               )}
