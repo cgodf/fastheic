@@ -1,5 +1,3 @@
-import { ConversionFile } from '../../types/libheif';
-
 // Error types for better error handling
 export type ConversionError = 
   | 'INVALID_FILE'
@@ -18,8 +16,16 @@ export interface ConversionResult {
   };
 }
 
+// Type for heic2any function
+type Heic2AnyFunction = (options: {
+  blob: Blob;
+  toType: string;
+  quality: number;
+  multiple?: boolean;
+}) => Promise<Blob | Blob[]>;
+
 export class HeicConverterService {
-  private heic2any: any = null;
+  private heic2any: Heic2AnyFunction | null = null;
   private isLoading = false;
   private loadPromise: Promise<void> | null = null;
 
@@ -47,8 +53,8 @@ export class HeicConverterService {
 
   private async performLoad(): Promise<void> {
     try {
-      const module = await import('heic2any');
-      this.heic2any = module.default;
+      const heic2anyModule = await import('heic2any');
+      this.heic2any = heic2anyModule.default as Heic2AnyFunction;
       console.log('heic2any loaded successfully');
     } catch (error) {
       console.error('Failed to load heic2any:', error);
@@ -91,7 +97,7 @@ export class HeicConverterService {
    * Convert a single HEIC file to JPG with retry logic
    */
   public async convertFile(file: File, quality: number = 0.9, maxRetries: number = 2): Promise<ConversionResult> {
-    let lastError: any = null;
+    let lastError: Error | ConversionResult['error'] | null = null;
     
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
@@ -116,7 +122,7 @@ export class HeicConverterService {
         }
         
       } catch (error) {
-        lastError = error;
+        lastError = error as Error;
         
         // Wait with exponential backoff before retry (except on last attempt)
         if (attempt < maxRetries) {
@@ -155,6 +161,17 @@ export class HeicConverterService {
     try {
       // Load heic2any if not already loaded
       await this.loadHeic2any();
+      
+      // Ensure heic2any is loaded
+      if (!this.heic2any) {
+        return {
+          success: false,
+          error: {
+            type: 'CONVERSION_FAILED',
+            message: 'Failed to load HEIC converter library'
+          }
+        };
+      }
 
       // Validate file type
       if (!this.isHeicFile(file)) {
@@ -187,22 +204,23 @@ export class HeicConverterService {
         thumbnail
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       console.error('HEIC conversion failed:', error);
       
       // Determine error type
       let errorType: ConversionError = 'UNKNOWN_ERROR';
       let errorMessage = 'An unknown error occurred during conversion';
 
-      if (error?.message?.includes('memory') || error?.message?.includes('Memory')) {
+      if (err?.message?.includes('memory') || err?.message?.includes('Memory')) {
         errorType = 'MEMORY_ERROR';
         errorMessage = 'Not enough memory to convert this file. Try a smaller file.';
-      } else if (error?.message?.includes('Invalid') || error?.message?.includes('corrupt')) {
+      } else if (err?.message?.includes('Invalid') || err?.message?.includes('corrupt')) {
         errorType = 'INVALID_FILE';
         errorMessage = 'This HEIC file appears to be corrupted or invalid.';
-      } else if (error?.message) {
+      } else if (err?.message) {
         errorType = 'CONVERSION_FAILED';
-        errorMessage = `Conversion failed: ${error.message}`;
+        errorMessage = `Conversion failed: ${err.message}`;
       }
 
       return {
@@ -238,8 +256,8 @@ export class HeicConverterService {
    */
   public cleanupMemory(): void {
     // Force garbage collection if available (mainly for development)
-    if (typeof window !== 'undefined' && (window as any).gc) {
-      (window as any).gc();
+    if (typeof window !== 'undefined' && 'gc' in window && typeof (window as { gc?: () => void }).gc === 'function') {
+      (window as { gc: () => void }).gc();
     }
     
     // Clear any cached blobs or URLs

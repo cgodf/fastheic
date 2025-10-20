@@ -52,9 +52,9 @@ export default function TermsOfService() {
               </h2>
               <div className="border-2 border-border p-6 rounded-lg">
                 <p className="text-muted-foreground mb-4">
-                  By accessing and using FastHEIC ("the Service"), you accept
+                  By accessing and using FastHEIC (&ldquo;the Service&rdquo;), you accept
                   and agree to be bound by the terms and provision of this
-                  agreement. These Terms of Service ("Terms") constitute a
+                  agreement. These Terms of Service (&ldquo;Terms&rdquo;) constitute a
                   legally binding agreement between you and FastHEIC.
                 </p>
                 <p className="text-muted-foreground">
@@ -215,10 +215,10 @@ export default function TermsOfService() {
               <div className="space-y-4">
                 <div className="border-2 border-border p-6 rounded-lg">
                   <h3 className="font-semibold text-foreground mb-3">
-                    Service "As Is"
+                    Service &ldquo;As Is&rdquo;
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    FastHEIC is provided "as is" without any warranties,
+                    FastHEIC is provided &ldquo;as is&rdquo; without any warranties,
                     expressed or implied. We make no representations or
                     warranties regarding the accuracy, reliability, or
                     availability of the service.

@@ -13,7 +13,7 @@ const adSizes = {
   rectangle: { width: '300px', height: '250px', minWidth: '300px' },
 };
 
-export default function AdPlaceholder({ size, position, className = '' }: AdPlaceholderProps) {
+export default function AdPlaceholder({ size, className = '' }: AdPlaceholderProps) {
   const adSize = adSizes[size];
   
   return (

@@ -107,7 +107,7 @@ export default function BatchProgressSummary({
             <span>{files.filter(f => f.status === 'waiting').length} waiting</span>
           </div>
           <div className="mt-2 flex gap-1">
-            {files.slice(0, 20).map((file, index) => (
+            {files.slice(0, 20).map((file) => (
               <div
                 key={file.id}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${

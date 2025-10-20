@@ -2,6 +2,14 @@
 
 import Script from 'next/script';
 
+// Extend Window interface for gtag
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+    dataLayer?: unknown[];
+  }
+}
+
 // Replace with your actual Google Analytics measurement ID
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || 'GA_MEASUREMENT_ID_PLACEHOLDER';
 
@@ -37,8 +45,8 @@ export default function Analytics() {
 
 // Helper functions for tracking conversion events
 export const trackConversion = (fileCount: number, conversionType: 'single' | 'bulk' = 'single') => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', 'file_conversion', {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'file_conversion', {
       event_category: 'conversion',
       event_label: conversionType,
       value: fileCount,
@@ -49,8 +57,8 @@ export const trackConversion = (fileCount: number, conversionType: 'single' | 'b
 };
 
 export const trackDownload = (downloadType: 'individual' | 'zip', fileCount: number) => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', 'file_download', {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'file_download', {
       event_category: 'download',
       event_label: downloadType,
       value: fileCount,
@@ -61,8 +69,8 @@ export const trackDownload = (downloadType: 'individual' | 'zip', fileCount: num
 };
 
 export const trackError = (errorType: string, errorMessage: string) => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', 'conversion_error', {
+  if (typeof window !== 'undefined' && window.gtag) {
+    window.gtag('event', 'conversion_error', {
       event_category: 'error',
       event_label: errorType,
       custom_parameter_1: errorType,

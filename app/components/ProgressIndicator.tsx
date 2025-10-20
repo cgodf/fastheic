@@ -1,6 +1,4 @@
-'use client';
-
-import { useMemo } from 'react';
+"use client";
 
 interface ProgressIndicatorProps {
   current: number;
@@ -8,7 +6,7 @@ interface ProgressIndicatorProps {
   failed?: number;
   className?: string;
   showText?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
 }
 
 interface CircularProgressProps {
@@ -20,86 +18,87 @@ interface CircularProgressProps {
   className?: string;
 }
 
-export function LinearProgress({ 
-  current, 
-  total, 
-  failed = 0, 
-  className = '',
+export function LinearProgress({
+  current,
+  total,
+  failed = 0,
+  className = "",
   showText = true,
-  size = 'md' 
+  size = "md",
 }: ProgressIndicatorProps) {
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
-  const successPercentage = total > 0 ? Math.round(((current - failed) / total) * 100) : 0;
+  const successPercentage =
+    total > 0 ? Math.round(((current - failed) / total) * 100) : 0;
   const failedPercentage = total > 0 ? Math.round((failed / total) * 100) : 0;
 
   const heightClass = {
-    sm: 'h-2',
-    md: 'h-3',
-    lg: 'h-4'
+    sm: "h-2",
+    md: "h-3",
+    lg: "h-4",
   }[size];
 
   const textSizeClass = {
-    sm: 'text-xs',
-    md: 'text-sm',
-    lg: 'text-base'
+    sm: "text-xs",
+    md: "text-sm",
+    lg: "text-base",
   }[size];
 
   return (
     <div className={`w-full ${className}`}>
       {showText && (
-        <div className={`flex justify-between items-center mb-2 ${textSizeClass}`}>
+        <div
+          className={`flex justify-between items-center mb-2 ${textSizeClass}`}
+        >
           <span className="text-muted-foreground">
             {current} of {total} files processed
           </span>
-          <span className="text-foreground font-medium">
-            {percentage}%
-          </span>
+          <span className="text-foreground font-medium">{percentage}%</span>
         </div>
       )}
-      
+
       <div className={`glass rounded-full overflow-hidden ${heightClass}`}>
         <div className="relative w-full h-full">
           {/* Background */}
           <div className="absolute inset-0 bg-muted/30" />
-          
+
           {/* Success progress */}
           <div
             className="absolute left-0 top-0 h-full bg-gradient-to-r from-teal-400 to-teal-500 transition-all duration-500 ease-out"
             style={{ width: `${successPercentage}%` }}
           />
-          
+
           {/* Failed progress */}
           {failed > 0 && (
             <div
               className="absolute top-0 h-full bg-gradient-to-r from-red-400 to-red-500 transition-all duration-500 ease-out"
-              style={{ 
+              style={{
                 left: `${successPercentage}%`,
-                width: `${failedPercentage}%` 
+                width: `${failedPercentage}%`,
               }}
             />
           )}
-          
+
           {/* Shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-shimmer" />
         </div>
       </div>
-      
+
       {failed > 0 && showText && (
         <div className={`mt-1 ${textSizeClass} text-destructive`}>
-          {failed} file{failed !== 1 ? 's' : ''} failed
+          {failed} file{failed !== 1 ? "s" : ""} failed
         </div>
       )}
     </div>
   );
 }
 
-export function CircularProgress({ 
-  current, 
-  total, 
+export function CircularProgress({
+  current,
+  total,
   failed = 0,
   size = 120,
   strokeWidth = 8,
-  className = '' 
+  className = "",
 }: CircularProgressProps) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -110,7 +109,10 @@ export function CircularProgress({
   const center = size / 2;
 
   return (
-    <div className={`relative glass rounded-full p-4 ${className}`} style={{ width: size + 32, height: size + 32 }}>
+    <div
+      className={`relative glass rounded-full p-4 ${className}`}
+      style={{ width: size + 32, height: size + 32 }}
+    >
       <svg
         width={size}
         height={size}
@@ -126,7 +128,7 @@ export function CircularProgress({
           fill="transparent"
           className="text-muted/30"
         />
-        
+
         {/* Progress circle */}
         <circle
           cx={center}
@@ -140,7 +142,7 @@ export function CircularProgress({
           className="text-teal-500 transition-all duration-500 ease-out"
           strokeLinecap="round"
         />
-        
+
         {/* Failed progress indicator */}
         {failed > 0 && (
           <circle
@@ -151,13 +153,15 @@ export function CircularProgress({
             strokeWidth={4}
             fill="transparent"
             strokeDasharray={circumference * 0.8}
-            strokeDashoffset={circumference * 0.8 - (failed / total) * circumference * 0.8}
+            strokeDashoffset={
+              circumference * 0.8 - (failed / total) * circumference * 0.8
+            }
             className="text-destructive transition-all duration-500 ease-out"
             strokeLinecap="round"
           />
         )}
       </svg>
-      
+
       {/* Center content */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
@@ -173,11 +177,17 @@ export function CircularProgress({
   );
 }
 
-export function ProcessingSpinner({ className = '', size = 'md' }: { className?: string; size?: 'sm' | 'md' | 'lg' }) {
+export function ProcessingSpinner({
+  className = "",
+  size = "md",
+}: {
+  className?: string;
+  size?: "sm" | "md" | "lg";
+}) {
   const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8'
+    sm: "w-4 h-4",
+    md: "w-6 h-6",
+    lg: "w-8 h-8",
   }[size];
 
   return (
@@ -206,7 +216,7 @@ export function ProcessingSpinner({ className = '', size = 'md' }: { className?:
 }
 
 // Pulse animation for loading states
-export function PulseLoader({ className = '' }: { className?: string }) {
+export function PulseLoader({ className = "" }: { className?: string }) {
   return (
     <div className={`flex space-x-2 ${className}`}>
       {[0, 1, 2].map((i) => (
@@ -215,7 +225,7 @@ export function PulseLoader({ className = '' }: { className?: string }) {
           className="w-2 h-2 glass rounded-full animate-pulse"
           style={{
             animationDelay: `${i * 0.2}s`,
-            animationDuration: '1.4s'
+            animationDuration: "1.4s",
           }}
         />
       ))}

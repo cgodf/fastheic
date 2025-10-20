@@ -126,7 +126,7 @@ export default function ErrorRecovery({
             {failedFiles.length} File{failedFiles.length !== 1 ? 's' : ''} Failed
           </h3>
           <p className="text-sm text-muted-foreground">
-            Don't worry, we can help you fix these issues
+            Don&apos;t worry, we can help you fix these issues
           </p>
         </div>
       </div>
