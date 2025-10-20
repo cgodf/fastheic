@@ -68,7 +68,7 @@ export default function FileDropzone({
     return { validFiles, errors: newErrors };
   }, [maxFiles, maxFileSize, maxTotalSize]);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDropAccepted = useCallback((acceptedFiles: File[]) => {
     setErrors([]);
     
     const { validFiles, errors: validationErrors } = validateFiles(acceptedFiles);
@@ -89,9 +89,76 @@ export default function FileDropzone({
 
     onFilesAdded(conversionFiles);
   }, [onFilesAdded, validateFiles]);
+  
+  const onDropRejected = useCallback((fileRejections: any[]) => {
+    setErrors([]);
+    
+    const errorCounts = new Map<string, { count: number; files: string[] }>();
+    
+    fileRejections.forEach(rejection => {
+      const { file, errors } = rejection;
+      errors.forEach((err: any) => {
+        let errorKey = '';
+        let errorTemplate = '';
+        
+        if (err.code === 'file-invalid-type') {
+          errorKey = 'invalid-type';
+          errorTemplate = 'Only HEIC and HEIF files are supported';
+        } else if (err.code === 'file-too-large') {
+          errorKey = 'too-large';
+          errorTemplate = `File too large. Maximum ${Math.round(maxFileSize / (1024 * 1024))}MB per file`;
+        } else if (err.code === 'too-many-files') {
+          errorKey = 'too-many-files';
+          errorTemplate = `Too many files selected. Maximum ${maxFiles} files allowed`;
+        } else {
+          errorKey = err.code || 'unknown';
+          errorTemplate = err.message;
+        }
+        
+        if (!errorCounts.has(errorKey)) {
+          errorCounts.set(errorKey, { count: 0, files: [] });
+        }
+        
+        const errorInfo = errorCounts.get(errorKey)!;
+        errorInfo.count++;
+        errorInfo.files.push(file.name);
+        errorCounts.set(errorKey, errorInfo);
+      });
+    });
+    
+    const consolidatedErrors: string[] = [];
+    
+    errorCounts.forEach((errorInfo, errorKey) => {
+      if (errorKey === 'too-many-files') {
+        // For "too many files", show a single consolidated message
+        consolidatedErrors.push(`Too many files selected (${errorInfo.count + maxFiles}). Maximum ${maxFiles} files allowed.`);
+      } else if (errorInfo.count === 1) {
+        // Single file error - show filename
+        if (errorKey === 'invalid-type') {
+          consolidatedErrors.push(`${errorInfo.files[0]}: Only HEIC and HEIF files are supported.`);
+        } else if (errorKey === 'too-large') {
+          consolidatedErrors.push(`${errorInfo.files[0]}: File too large. Maximum ${Math.round(maxFileSize / (1024 * 1024))}MB per file.`);
+        } else {
+          consolidatedErrors.push(`${errorInfo.files[0]}: Error occurred.`);
+        }
+      } else {
+        // Multiple files with same error - show count
+        if (errorKey === 'invalid-type') {
+          consolidatedErrors.push(`${errorInfo.count} files rejected: Only HEIC and HEIF files are supported.`);
+        } else if (errorKey === 'too-large') {
+          consolidatedErrors.push(`${errorInfo.count} files rejected: Files too large. Maximum ${Math.round(maxFileSize / (1024 * 1024))}MB per file.`);
+        } else {
+          consolidatedErrors.push(`${errorInfo.count} files rejected: Error occurred.`);
+        }
+      }
+    });
+    
+    setErrors(consolidatedErrors);
+  }, [maxFiles, maxFileSize]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
+    onDropAccepted,
+    onDropRejected,
     accept: {
       'image/heic': ['.heic'],
       'image/heif': ['.heif'],
@@ -99,6 +166,7 @@ export default function FileDropzone({
     disabled,
     multiple: true,
     maxFiles,
+    maxSize: maxFileSize,
   });
 
   return (

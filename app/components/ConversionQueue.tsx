@@ -129,6 +129,19 @@ function FileCard({ file, onRemove }: FileCardProps) {
             </div>
           </div>
 
+          {/* Progress indicator for large files */}
+          {file.status === 'converting' && file.size > 10 * 1024 * 1024 && (
+            <div className="mt-2">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                <span>Converting large file...</span>
+                <span>{formatFileSize(file.size)}</span>
+              </div>
+              <div className="glass rounded-full h-1.5 overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-primary to-accent animate-shimmer" style={{ width: '60%' }} />
+              </div>
+            </div>
+          )}
+          
           {/* Error Message */}
           {file.status === 'failed' && file.error && (
             <div className="mt-2 text-sm text-destructive bg-destructive/10 px-2 py-1 rounded">

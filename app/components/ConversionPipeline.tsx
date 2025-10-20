@@ -4,12 +4,15 @@ import { useState, useCallback, useEffect } from 'react';
 import { ConversionFile, ConversionProgress } from '../../types/libheif';
 import { heicConverter, ConversionResult } from '../services/heicConverter';
 import { trackConversion, trackError } from './Analytics';
+import Image from 'next/image';
 import FileDropzone from './FileDropzone';
 import ConversionQueue from './ConversionQueue';
 import DownloadManager from './DownloadManager';
 import { HeaderAd, BelowResultsAd } from './AdPlaceholder';
 import ThemeToggle from './ThemeToggle';
 import { LinearProgress } from './ProgressIndicator';
+import ErrorRecovery from './ErrorRecovery';
+import BatchProgressSummary from './BatchProgressSummary';
 
 type AppState = 'idle' | 'processing' | 'completed';
 
@@ -31,6 +34,11 @@ export default function ConversionPipeline() {
 
   // Handle files being added from dropzone
   const handleFilesAdded = useCallback((newFiles: ConversionFile[]) => {
+    // Don't process if no valid files were provided
+    if (newFiles.length === 0) {
+      return; // Stay in idle state
+    }
+    
     setFiles(newFiles);
     setAppState('processing');
     setProgress({ total: newFiles.length, completed: 0, failed: 0 });
@@ -53,8 +61,8 @@ export default function ConversionPipeline() {
       setFiles([...updatedFiles]);
 
       try {
-        // Convert the file
-        const result: ConversionResult = await heicConverter.convertFile(file.file, 0.9);
+        // Convert the file with retry logic
+        const result: ConversionResult = await heicConverter.convertFile(file.file, 0.9, 2);
         
         if (result.success && result.blob && result.thumbnail) {
           // Success
@@ -85,6 +93,12 @@ export default function ConversionPipeline() {
         // Track error
         trackError('UNKNOWN_ERROR', file.error);
       }
+      
+      // Cleanup memory after each conversion
+      heicConverter.cleanupMemory();
+      
+      // Small delay to prevent overwhelming the browser
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Update progress
       setProgress({ 
@@ -128,24 +142,51 @@ export default function ConversionPipeline() {
     });
   }, []);
 
-  // Retry conversion for failed files
-  const handleRetryFailed = useCallback(() => {
-    const failedFiles = files.filter(f => f.status === 'failed');
-    if (failedFiles.length === 0) return;
-
-    // Reset failed files to waiting status
+  // Retry specific files by ID
+  const handleRetryFiles = useCallback((fileIds: string[]) => {
     const updatedFiles = files.map(f => 
-      f.status === 'failed' 
+      fileIds.includes(f.id) && f.status === 'failed'
         ? { ...f, status: 'waiting' as const, error: undefined }
         : f
     );
-
+    
+    const filesToRetry = updatedFiles.filter(f => fileIds.includes(f.id) && f.status === 'waiting');
+    
+    if (filesToRetry.length === 0) return;
+    
     setFiles(updatedFiles);
     setAppState('processing');
     
-    // Process only the failed files
-    processFiles(failedFiles.map(f => ({ ...f, status: 'waiting' as const, error: undefined })));
+    // Process only the retry files
+    processFiles(filesToRetry);
   }, [files]);
+  
+  // Remove specific files by ID  
+  const handleRemoveFiles = useCallback((fileIds: string[]) => {
+    const updatedFiles = files.filter(f => !fileIds.includes(f.id));
+    
+    setFiles(updatedFiles);
+    
+    // Update progress
+    const completed = updatedFiles.filter(f => f.status === 'done').length;
+    const failed = updatedFiles.filter(f => f.status === 'failed').length;
+    
+    setProgress({ total: updatedFiles.length, completed, failed });
+    
+    // If no files left, reset to idle
+    if (updatedFiles.length === 0) {
+      setAppState('idle');
+      setProgress({ total: 0, completed: 0, failed: 0 });
+    } else if (updatedFiles.every(f => f.status === 'done' || f.status === 'failed')) {
+      setAppState('completed');
+    }
+  }, [files]);
+
+  // Legacy retry function for backward compatibility
+  const handleRetryFailed = useCallback(() => {
+    const failedFileIds = files.filter(f => f.status === 'failed').map(f => f.id);
+    handleRetryFiles(failedFileIds);
+  }, [files, handleRetryFiles]);
 
   // Show browser not supported message
   if (!browserSupported) {
@@ -175,10 +216,8 @@ export default function ConversionPipeline() {
       <div className="w-full border-b border-border/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <svg className="w-5 h-5 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
+            <div className="w-8 h-8">
+              <Image src="/fastheiclogo.svg" alt="FastHEIC" width={32} height={32} />
             </div>
             <div className="flex items-baseline gap-1">
               <span className="text-lg font-bold text-foreground">Fast</span>
@@ -246,14 +285,21 @@ export default function ConversionPipeline() {
           <div className="flex gap-8">
             {/* Main Conversion Area */}
             <div className="flex-1 space-y-6">
+              {/* Batch Progress Summary */}
+              <BatchProgressSummary 
+                files={files}
+                progress={progress}
+                appState={appState}
+              />
+              
               {/* Header with Progress */}
               <div className="glass rounded-2xl p-6">
                 <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-3">
                       {appState === 'completed' ? (
-                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                          <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-10 h-10 rounded-full bg-teal-500/20 flex items-center justify-center">
+                          <svg className="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
@@ -319,6 +365,16 @@ export default function ConversionPipeline() {
                 files={files} 
                 onRemoveFile={handleRemoveFile}
               />
+              
+              {/* Error Recovery - Show when there are failed files */}
+              {progress.failed > 0 && appState === 'completed' && (
+                <ErrorRecovery 
+                  files={files}
+                  onRetry={handleRetryFiles}
+                  onRemove={handleRemoveFiles} 
+                  onReset={handleReset}
+                />
+              )}
             </div>
 
             {/* Sidebar with ads - only show on larger screens */}

@@ -88,9 +88,58 @@ export class HeicConverterService {
   }
 
   /**
-   * Convert a single HEIC file to JPG
+   * Convert a single HEIC file to JPG with retry logic
    */
-  public async convertFile(file: File, quality: number = 0.9): Promise<ConversionResult> {
+  public async convertFile(file: File, quality: number = 0.9, maxRetries: number = 2): Promise<ConversionResult> {
+    let lastError: any = null;
+    
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const result = await this.performConversion(file, quality);
+        
+        // If successful, return immediately
+        if (result.success) {
+          return result;
+        }
+        
+        // If it's a non-retryable error, don't retry
+        if (result.error && this.isNonRetryableError(result.error.type)) {
+          return result;
+        }
+        
+        lastError = result.error;
+        
+        // Wait with exponential backoff before retry (except on last attempt)
+        if (attempt < maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, attempt), 5000); // Max 5 seconds
+          await this.delay(delay);
+        }
+        
+      } catch (error) {
+        lastError = error;
+        
+        // Wait with exponential backoff before retry (except on last attempt)
+        if (attempt < maxRetries) {
+          const delay = Math.min(1000 * Math.pow(2, attempt), 5000);
+          await this.delay(delay);
+        }
+      }
+    }
+    
+    // If all retries failed, return the last error
+    return {
+      success: false,
+      error: {
+        type: 'CONVERSION_FAILED',
+        message: `Conversion failed after ${maxRetries + 1} attempts: ${lastError?.message || 'Unknown error'}`
+      }
+    };
+  }
+  
+  /**
+   * Perform the actual conversion (extracted for retry logic)
+   */
+  private async performConversion(file: File, quality: number = 0.9): Promise<ConversionResult> {
     // Check browser support first
     const browserCheck = this.checkBrowserSupport();
     if (!browserCheck.supported) {
@@ -164,6 +213,37 @@ export class HeicConverterService {
         }
       };
     }
+  }
+  
+  /**
+   * Check if an error type should not be retried
+   */
+  private isNonRetryableError(errorType: ConversionError): boolean {
+    return [
+      'BROWSER_NOT_SUPPORTED',
+      'INVALID_FILE',
+      'MEMORY_ERROR' // Don't retry memory errors as they're likely to fail again
+    ].includes(errorType);
+  }
+  
+  /**
+   * Utility function to create delays for retry logic
+   */
+  private delay(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  
+  /**
+   * Clean up memory after conversion
+   */
+  public cleanupMemory(): void {
+    // Force garbage collection if available (mainly for development)
+    if (typeof window !== 'undefined' && (window as any).gc) {
+      (window as any).gc();
+    }
+    
+    // Clear any cached blobs or URLs
+    // This is handled by the components that create object URLs
   }
 
   /**
