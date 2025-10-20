@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,67 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IDE - JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Other
+.history/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+
+# Test coverage
+.nyc_output/
+coverage/
+*.lcov
+
+# Logs
+*.log
+logs/
+
+# Screenshots (for development)
+# Uncomment if you don't want to commit screenshots
+# /public/screenshots/
+# *.png
+# *.jpg
+
+# Local development
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Backup files
+*.bak
+*.backup
+
+# Internal documentation (business strategy, planning)
+/docs/
+WARP.md
