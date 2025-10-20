@@ -8,7 +8,7 @@ import Image from 'next/image';
 import FileDropzone from './FileDropzone';
 import ConversionQueue from './ConversionQueue';
 import DownloadManager from './DownloadManager';
-import { HeaderAd, BelowResultsAd } from './AdPlaceholder';
+import { HeaderAd, BelowResultsAd, InContentAd, MobileAnchorAd } from './AdPlaceholder';
 import ThemeToggle from './ThemeToggle';
 import { LinearProgress } from './ProgressIndicator';
 import ErrorRecovery from './ErrorRecovery';
@@ -366,6 +366,9 @@ export default function ConversionPipeline() {
                 onRemoveFile={handleRemoveFile}
               />
               
+              {/* In-Content Ad - High visibility during processing */}
+              <InContentAd />
+              
               {/* Error Recovery - Show when there are failed files */}
               {progress.failed > 0 && appState === 'completed' && (
                 <ErrorRecovery 
@@ -391,6 +394,11 @@ export default function ConversionPipeline() {
           <BelowResultsAd className="mt-8" />
         )}
       </div>
+
+      {/* Mobile Anchor Ad - Sticky bottom on mobile only */}
+      {(appState === 'processing' || appState === 'completed') && (
+        <MobileAnchorAd />
+      )}
     </div>
   );
 }

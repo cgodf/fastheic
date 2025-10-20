@@ -47,8 +47,15 @@ export default function AdPlaceholder({ size, className = '' }: AdPlaceholderPro
 // Specific ad components for different placements
 export function HeaderAd({ className }: { className?: string }) {
   return (
-    <div className={`hidden md:flex justify-center ${className}`}>
-      <AdPlaceholder size="leaderboard" position="header" />
+    <div className={`flex justify-center ${className}`}>
+      {/* Desktop: Leaderboard */}
+      <div className="hidden md:block">
+        <AdPlaceholder size="leaderboard" position="header" />
+      </div>
+      {/* Mobile: Rectangle */}
+      <div className="md:hidden">
+        <AdPlaceholder size="rectangle" position="header" />
+      </div>
     </div>
   );
 }
@@ -69,6 +76,42 @@ export function BelowResultsAd({ className }: { className?: string }) {
       </div>
       <div className="md:hidden">
         <AdPlaceholder size="rectangle" position="below-results" />
+      </div>
+    </div>
+  );
+}
+
+// Sticky sidebar ad (stays visible on scroll)
+export function StickySidebarAd({ className }: { className?: string }) {
+  return (
+    <div className={`hidden xl:block ${className}`}>
+      <div className="sticky top-8">
+        <AdPlaceholder size="skyscraper" position="sidebar" />
+      </div>
+    </div>
+  );
+}
+
+// In-content ad for better engagement
+export function InContentAd({ className }: { className?: string }) {
+  return (
+    <div className={`flex justify-center my-8 ${className}`}>
+      <div className="hidden md:block">
+        <AdPlaceholder size="leaderboard" position="below-results" />
+      </div>
+      <div className="md:hidden">
+        <AdPlaceholder size="rectangle" position="below-results" />
+      </div>
+    </div>
+  );
+}
+
+// Mobile anchor ad (sticky bottom - high CPM on mobile)
+export function MobileAnchorAd() {
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border shadow-lg">
+      <div className="flex justify-center p-2">
+        <AdPlaceholder size="banner" position="below-results" />
       </div>
     </div>
   );
