@@ -35,13 +35,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FastHEIC - Fast & Free HEIC to JPG Converter",
     description: "Convert HEIC files to JPG instantly in your browser. No uploads, completely private, bulk conversion supported.",
-    url: "https://fastheictojpg.com",
+    url: "https://www.fastheictojpg.com",
     siteName: "FastHEIC",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "https://fastheictojpg.com/og-image.jpg",
+        url: "https://www.fastheictojpg.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "FastHEIC - Convert HEIC to JPG instantly",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FastHEIC - Fast & Free HEIC to JPG Converter",
     description: "Convert HEIC files to JPG instantly in your browser. Private and secure.",
-    images: ["https://fastheictojpg.com/og-image.jpg"],
+    images: ["https://www.fastheictojpg.com/og-image.jpg"],
     creator: "@fastheic",
   },
   robots: {
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     google: 'your-google-verification-code', // To be replaced with actual code
   },
   alternates: {
-    canonical: "https://fastheictojpg.com",
+    canonical: "https://www.fastheictojpg.com",
   },
   manifest: "/manifest.json",
   icons: {
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'google-adsense-account': 'ca-pub-xxxxxxxxxxxxxxxxx', // To be replaced with actual AdSense ID
+    'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_ID || '',
     'msapplication-TileColor': '#0d9488',
   },
 };

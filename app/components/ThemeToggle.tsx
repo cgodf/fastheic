@@ -3,21 +3,20 @@
 import { useState, useEffect } from 'react';
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(true); // Default to dark
+  const [isDark, setIsDark] = useState(false); // Default to light
   const [mounted, setMounted] = useState(false);
 
   // Handle hydration
   useEffect(() => {
     setMounted(true);
     
-    // Check for saved theme preference or default to system preference
+    // Check for saved theme preference or default to light mode
     const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     if (savedTheme) {
       setIsDark(savedTheme === 'dark');
     } else {
-      setIsDark(systemPrefersDark);
+      setIsDark(false); // Default to light mode
     }
   }, []);
 
