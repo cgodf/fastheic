@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Terms of Service - FastHEIC Converter",
   description:
     "FastHEIC Terms of Service - Usage terms, disclaimers, and user responsibilities for our HEIC to JPG conversion service.",
+  keywords: "HEIC converter terms, image converter terms of service, free converter license, FastHEIC usage terms",
   openGraph: {
     title: "Terms of Service - FastHEIC Converter",
     description:

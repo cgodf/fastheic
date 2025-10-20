@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Analytics from './components/Analytics';
 import StructuredData from './components/StructuredData';
+import FAQSchema from './components/FAQSchema';
 import Footer from './components/Footer';
 import "./globals.css";
 
@@ -131,6 +132,7 @@ export default function RootLayout({
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
       >
         <StructuredData />
+        <FAQSchema />
         <Analytics />
         <div className="flex flex-col min-h-screen">
           <main className="flex-1">

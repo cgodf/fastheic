@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "How It Works - FastHEIC Converter",
   description: "Learn how FastHEIC converts HEIC files to JPG entirely in your browser. No uploads, complete privacy, and lightning-fast conversion.",
+  keywords: "how to convert HEIC, HEIC conversion process, browser HEIC converter, WebAssembly HEIC, local file conversion, private HEIC converter",
   openGraph: {
     title: "How It Works - FastHEIC Converter",
     description: "Learn how FastHEIC converts HEIC files to JPG entirely in your browser. No uploads, complete privacy, and lightning-fast conversion.",

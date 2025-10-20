@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy - FastHEIC Converter",
   description:
     "FastHEIC Privacy Policy - Learn how we protect your privacy with local file processing, no uploads, and minimal data collection.",
+  keywords: "HEIC privacy, secure file conversion, private image converter, no upload converter, local file processing",
   openGraph: {
     title: "Privacy Policy - FastHEIC Converter",
     description:
