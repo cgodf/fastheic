@@ -3,7 +3,7 @@ export default function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "FastHEIC",
-    "url": "https://fastheictojpg.com",
+    "url": "https://www.fastheictojpg.com",
     "description": "Convert HEIC files to JPG instantly in your browser. No uploads, completely private, bulk conversion supported.",
     "applicationCategory": "PhotographyApplication",
     "operatingSystem": "Any",
@@ -26,14 +26,14 @@ export default function StructuredData() {
       "Fast processing",
       "Cross-platform compatibility"
     ],
-    "screenshot": "https://fastheictojpg.com/app-screenshot.jpg"
+    "screenshot": "https://www.fastheictojpg.com/app-screenshot.jpg"
   };
 
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "FastHEIC",
-    "url": "https://fastheictojpg.com",
+    "url": "https://www.fastheictojpg.com",
     "description": "Fast and free HEIC to JPG converter tool",
     "foundingDate": "2024",
     "sameAs": [
@@ -47,7 +47,7 @@ export default function StructuredData() {
     "name": "FastHEIC - HEIC to JPG Converter",
     "applicationCategory": "PhotographyApplication",
     "operatingSystem": "Web Browser",
-    "url": "https://fastheictojpg.com",
+    "url": "https://www.fastheictojpg.com",
     "description": "Convert HEIC files to JPG instantly in your browser. No uploads, completely private, bulk conversion supported.",
     "softwareVersion": "1.0",
     "datePublished": "2024-01-01",
@@ -77,7 +77,7 @@ export default function StructuredData() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://fastheictojpg.com"
+        "item": "https://www.fastheictojpg.com"
       }
     ]
   };

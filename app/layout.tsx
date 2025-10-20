@@ -97,6 +97,36 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="light" style={{ colorScheme: 'light' }}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const THEME_VERSION = '2.0';
+                const savedVersion = localStorage.getItem('theme-version');
+                const savedTheme = localStorage.getItem('theme');
+                
+                // Force light mode if version changed or new user
+                if (savedVersion !== THEME_VERSION || !savedTheme) {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                  document.documentElement.style.colorScheme = 'light';
+                  localStorage.setItem('theme', 'light');
+                  localStorage.setItem('theme-version', THEME_VERSION);
+                } else if (savedTheme === 'dark') {
+                  document.documentElement.classList.remove('light');
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.colorScheme = 'dark';
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                  document.documentElement.style.colorScheme = 'light';
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
       >

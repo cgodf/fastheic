@@ -10,13 +10,24 @@ export default function ThemeToggle() {
   useEffect(() => {
     setMounted(true);
     
-    // Check for saved theme preference or default to light mode
+    // Theme version - increment to force reset for all users
+    const THEME_VERSION = '2.0';
+    const savedVersion = localStorage.getItem('theme-version');
     const savedTheme = localStorage.getItem('theme');
     
-    if (savedTheme) {
+    // If version changed, reset to light mode (ignores old preferences)
+    if (savedVersion !== THEME_VERSION) {
+      setIsDark(false);
+      localStorage.setItem('theme', 'light');
+      localStorage.setItem('theme-version', THEME_VERSION);
+    } else if (savedTheme) {
+      // Use saved preference only if version matches
       setIsDark(savedTheme === 'dark');
     } else {
-      setIsDark(false); // Default to light mode
+      // New users default to light
+      setIsDark(false);
+      localStorage.setItem('theme', 'light');
+      localStorage.setItem('theme-version', THEME_VERSION);
     }
   }, []);
 
