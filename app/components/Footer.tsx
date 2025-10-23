@@ -47,6 +47,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/iphone-settings"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  iPhone Settings Guide
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
