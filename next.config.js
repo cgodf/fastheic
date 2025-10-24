@@ -36,21 +36,6 @@ const nextConfig = {
         ]
       }
     ];
-  },
-  async redirects() {
-    return [
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.fastheictojpg.com'
-          }
-        ],
-        destination: 'https://fastheictojpg.com/:path*',
-        permanent: true
-      }
-    ];
   }
 };
 
