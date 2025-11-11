@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { ConversionFile } from '../../types/libheif';
 import { trackDownload } from './Analytics';
 
@@ -145,10 +146,13 @@ export default function DownloadManager({ files }: DownloadManagerProps) {
                 {/* Thumbnail */}
                 <div className="w-16 h-16 rounded-xl overflow-hidden glass-intense flex-shrink-0 ring-2 ring-green-500/20">
                   {file.thumbnail ? (
-                    <img 
+                    <Image 
                       src={file.thumbnail} 
                       alt={file.name}
+                      width={64}
+                      height={64}
                       className="w-full h-full object-cover"
+                      unoptimized
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-green-500/10">

@@ -5,9 +5,9 @@ export default function Footer() {
   return (
     <footer className="w-full border-t border-border/40 bg-background/80 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand & Description */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8">
                 <Image src="/fastheiclogo.svg" alt="FastHEIC" width={32} height={32} />
@@ -39,6 +39,14 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
+                  href="/"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Converter Tool
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/how-it-works"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -47,18 +55,49 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/iphone-settings"
+                  href="/use-cases"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  iPhone Settings Guide
+                  Use Cases
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/"
+                  href="/faq"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Converter Tool
+                  FAQ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Learn */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Learn</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/heic-format"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  What is HEIC?
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/jpg-format"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  What is JPG?
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/iphone-settings"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  iPhone Settings
                 </Link>
               </li>
             </ul>
@@ -68,6 +107,14 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-foreground mb-4">Legal</h3>
             <ul className="space-y-3">
+              <li>
+                <Link
+                  href="/about"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  About
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/privacy"

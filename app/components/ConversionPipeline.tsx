@@ -189,11 +189,10 @@ export default function ConversionPipeline() {
   }, [files, handleRetryFiles]);
 
   // Show browser not supported message
+  // IMPORTANT: No ads on error pages per AdSense policies
   if (!browserSupported) {
     return (
       <div className="w-full max-w-4xl mx-auto">
-        <HeaderAd className="mb-8" />
-        
         <div className="glass rounded-2xl p-12 text-center border-destructive/50">
           <div className="mx-auto w-16 h-16 glass rounded-full flex items-center justify-center mb-6">
             <svg className="w-8 h-8 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,8 +365,10 @@ export default function ConversionPipeline() {
                 onRemoveFile={handleRemoveFile}
               />
               
-              {/* In-Content Ad - High visibility during processing */}
-              <InContentAd />
+              {/* In-Content Ad - Only show after user has successfully converted files */}
+              {appState === 'completed' && progress.completed > 0 && (
+                <InContentAd />
+              )}
               
               {/* Error Recovery - Show when there are failed files */}
               {progress.failed > 0 && appState === 'completed' && (
@@ -395,8 +396,8 @@ export default function ConversionPipeline() {
         )}
       </div>
 
-      {/* Mobile Anchor Ad - Sticky bottom on mobile only */}
-      {(appState === 'processing' || appState === 'completed') && (
+      {/* Mobile Anchor Ad - Only show after first successful conversion */}
+      {appState === 'completed' && progress.completed > 0 && (
         <MobileAnchorAd />
       )}
     </div>

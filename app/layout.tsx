@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import Analytics from './components/Analytics';
 import StructuredData from './components/StructuredData';
 import FAQSchema from './components/FAQSchema';
@@ -8,12 +8,6 @@ import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-mono",
   subsets: ["latin"],
   display: "swap",
 });
@@ -129,7 +123,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-background text-foreground`}
+        className={`${inter.variable} antialiased bg-background text-foreground`}
       >
         <StructuredData />
         <FAQSchema />

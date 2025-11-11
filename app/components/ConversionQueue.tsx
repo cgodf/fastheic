@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { ConversionFile } from '../../types/libheif';
 import { formatFileSize } from '../services/heicConverter';
 
@@ -93,10 +94,13 @@ function FileCard({ file, onRemove }: FileCardProps) {
           file.status === 'converting' ? 'animate-pulse' : ''
         }`}>
           {file.thumbnail ? (
-            <img 
+            <Image 
               src={file.thumbnail} 
               alt={file.name}
+              width={64}
+              height={64}
               className="w-full h-full object-cover"
+              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
