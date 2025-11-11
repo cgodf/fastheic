@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     ],
   },
   other: {
-    'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_ID || '',
+    'google-adsense-account': 'ca-pub-7548837670084494',
     'msapplication-TileColor': '#0d9488',
   },
 };
@@ -93,6 +93,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="light" style={{ colorScheme: 'light' }}>
       <head>
+        <script 
+          async 
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7548837670084494"
+          crossOrigin="anonymous"
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
