@@ -100,6 +100,22 @@ export default function Footer() {
                   iPhone Settings
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/photo-storage-backup"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Photo Storage & Backup
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/transfer-photos"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Transfer Photo Collections
+                </Link>
+              </li>
             </ul>
           </div>
 
